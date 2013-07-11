@@ -9,7 +9,7 @@ This repository contains the following assets:
 * a Constraint Programming (CP) model for the CB-CTT problem written in [GECODE v4](http://www.gecode.org "GECODE"), and
 * a Large Neighborhood Search (LNS) solver for the said model (implemented as a GECODE search engine).
 
-**Note** that the LNS engine implemented in this code is a prototype, and does not follow any of the GECODE codebase guidelines. In particular, the whole optimization run is carried out in a single call of `next()`. A more principled LNS engine for GECODE is in the works.
+**Note** that the LNS engine implemented in this code is a prototype, and does not follow any of the GECODE codebase guidelines. In particular, the whole optimization run is carried out in a single call of `next()`. A more principled LNS engine for GECODE can be found at [https://bitbucket.org/tunnuz/gecode-lns](https://bitbucket.org/tunnuz/gecode-lns).
 
 ## Usage
 
