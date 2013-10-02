@@ -1,0 +1,233 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		500BF2F217FC7BDC0044A1BC /* CBCTT.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CBCTT.cc; path = ../CBCTT.cc; sourceTree = "<group>"; };
+		500BF2F317FC7BDC0044A1BC /* CBCTT.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CBCTT.hh; path = ../CBCTT.hh; sourceTree = "<group>"; };
+		500BF2F417FC7BDC0044A1BC /* faculty.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = faculty.cc; path = ../faculty.cc; sourceTree = "<group>"; };
+		500BF2F517FC7BDC0044A1BC /* faculty.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = faculty.hh; path = ../faculty.hh; sourceTree = "<group>"; };
+		500BF2F817FC7BDC0044A1BC /* gecode-lns.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "gecode-lns.xcodeproj"; sourceTree = "<group>"; };
+		500BF2FB17FC7BDC0044A1BC /* gecode_lns.patch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = gecode_lns.patch; sourceTree = "<group>"; };
+		500BF2FC17FC7BDC0044A1BC /* lns.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lns.C; sourceTree = "<group>"; };
+		500BF2FD17FC7BDC0044A1BC /* lns.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lns.h; sourceTree = "<group>"; };
+		500BF2FE17FC7BDC0044A1BC /* lns_space.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lns_space.h; sourceTree = "<group>"; };
+		500BF2FF17FC7BDC0044A1BC /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		500BF30017FC7BDC0044A1BC /* meta_lns.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = meta_lns.C; sourceTree = "<group>"; };
+		500BF30117FC7BDC0044A1BC /* meta_lns.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = meta_lns.h; sourceTree = "<group>"; };
+		500BF30317FC7BDC0044A1BC /* tsp_lns.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsp_lns.C; sourceTree = "<group>"; };
+		500BF30417FC7BDC0044A1BC /* LNS.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LNS.hh; path = ../LNS.hh; sourceTree = "<group>"; };
+		500BF30517FC7BDC0044A1BC /* LNSSpace.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LNSSpace.hh; path = ../LNSSpace.hh; sourceTree = "<group>"; };
+		500BF30617FC7BDC0044A1BC /* main.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cc; path = ../main.cc; sourceTree = "<group>"; };
+		500BF30717FC7BDC0044A1BC /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; name = Makefile; path = ../Makefile; sourceTree = "<group>"; };
+		500BF30817FC7BDC0044A1BC /* random.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = random.cc; path = ../random.cc; sourceTree = "<group>"; };
+		500BF30917FC7BDC0044A1BC /* random.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = random.hh; path = ../random.hh; sourceTree = "<group>"; };
+		500BF30A17FC7BDC0044A1BC /* test.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = test.cfg; path = ../test.cfg; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		500BF2E717FC7BB50044A1BC = {
+			isa = PBXGroup;
+			children = (
+				500BF2F217FC7BDC0044A1BC /* CBCTT.cc */,
+				500BF2F317FC7BDC0044A1BC /* CBCTT.hh */,
+				500BF2F417FC7BDC0044A1BC /* faculty.cc */,
+				500BF2F517FC7BDC0044A1BC /* faculty.hh */,
+				500BF2F617FC7BDC0044A1BC /* gecode-lns */,
+				500BF30417FC7BDC0044A1BC /* LNS.hh */,
+				500BF30517FC7BDC0044A1BC /* LNSSpace.hh */,
+				500BF30617FC7BDC0044A1BC /* main.cc */,
+				500BF30717FC7BDC0044A1BC /* Makefile */,
+				500BF30817FC7BDC0044A1BC /* random.cc */,
+				500BF30917FC7BDC0044A1BC /* random.hh */,
+				500BF30A17FC7BDC0044A1BC /* test.cfg */,
+			);
+			sourceTree = "<group>";
+		};
+		500BF2F617FC7BDC0044A1BC /* gecode-lns */ = {
+			isa = PBXGroup;
+			children = (
+				500BF2F717FC7BDC0044A1BC /* gecode-lns */,
+				500BF2FB17FC7BDC0044A1BC /* gecode_lns.patch */,
+				500BF2FC17FC7BDC0044A1BC /* lns.C */,
+				500BF2FD17FC7BDC0044A1BC /* lns.h */,
+				500BF2FE17FC7BDC0044A1BC /* lns_space.h */,
+				500BF2FF17FC7BDC0044A1BC /* Makefile */,
+				500BF30017FC7BDC0044A1BC /* meta_lns.C */,
+				500BF30117FC7BDC0044A1BC /* meta_lns.h */,
+				500BF30317FC7BDC0044A1BC /* tsp_lns.C */,
+			);
+			name = "gecode-lns";
+			path = "../gecode-lns";
+			sourceTree = "<group>";
+		};
+		500BF2F717FC7BDC0044A1BC /* gecode-lns */ = {
+			isa = PBXGroup;
+			children = (
+				500BF2F817FC7BDC0044A1BC /* gecode-lns.xcodeproj */,
+			);
+			path = "gecode-lns";
+			sourceTree = "<group>";
+		};
+		500BF2F917FC7BDC0044A1BC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		500BF2EC17FC7BB50044A1BC /* cpctt */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = 500BF2EF17FC7BB50044A1BC /* Build configuration list for PBXLegacyTarget "cpctt" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			buildWorkingDirectory = "/Users/tunnuz/Development/C++11/cpctt";
+			dependencies = (
+			);
+			name = cpctt;
+			passBuildSettingsInEnvironment = 1;
+			productName = cpctt;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		500BF2E817FC7BB50044A1BC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "Tommaso Urli";
+			};
+			buildConfigurationList = 500BF2EB17FC7BB50044A1BC /* Build configuration list for PBXProject "cpctt" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 500BF2E717FC7BB50044A1BC;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 500BF2F917FC7BDC0044A1BC /* Products */;
+					ProjectRef = 500BF2F817FC7BDC0044A1BC /* gecode-lns.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				500BF2EC17FC7BB50044A1BC /* cpctt */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		500BF2ED17FC7BB50044A1BC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		500BF2EE17FC7BB50044A1BC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		500BF2F017FC7BB50044A1BC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUGGING_SYMBOLS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		500BF2F117FC7BB50044A1BC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		500BF2EB17FC7BB50044A1BC /* Build configuration list for PBXProject "cpctt" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				500BF2ED17FC7BB50044A1BC /* Debug */,
+				500BF2EE17FC7BB50044A1BC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		500BF2EF17FC7BB50044A1BC /* Build configuration list for PBXLegacyTarget "cpctt" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				500BF2F017FC7BB50044A1BC /* Debug */,
+				500BF2F117FC7BB50044A1BC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 500BF2E817FC7BB50044A1BC /* Project object */;
+}
