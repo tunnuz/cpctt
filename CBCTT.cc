@@ -1,6 +1,6 @@
 #include "CBCTT.hh"
 
-void CBCTT::post_best_branching()
+void CBCTT::neighborhood_branching()
 {
     // Post branching rules 
     branch(*this, roomslot, INT_VAR_DEGREE_MAX(), INT_VAL_MIN());
@@ -8,10 +8,10 @@ void CBCTT::post_best_branching()
 
 
 
-void CBCTT::post_random_branching()
+void CBCTT::initial_solution_branching(unsigned long int restarts)
 {
     // Post branching rules
-    branch(*this, roomslot, INT_VAR_RND(0), INT_VAL_RND(0));
+    branch(*this, roomslot, INT_VAR_RND(restarts), INT_VAL_RND(restarts));
 }
 
 

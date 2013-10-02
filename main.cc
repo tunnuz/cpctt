@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "CBCTT.hh"
-#include "LNS.hh"
+#include "gecode-lns/lns.h"
 
 using namespace std;
 

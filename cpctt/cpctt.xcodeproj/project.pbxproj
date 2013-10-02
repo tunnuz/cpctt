@@ -19,14 +19,12 @@
 		500BF2FF17FC7BDC0044A1BC /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		500BF30017FC7BDC0044A1BC /* meta_lns.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = meta_lns.C; sourceTree = "<group>"; };
 		500BF30117FC7BDC0044A1BC /* meta_lns.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = meta_lns.h; sourceTree = "<group>"; };
-		500BF30317FC7BDC0044A1BC /* tsp_lns.C */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsp_lns.C; sourceTree = "<group>"; };
-		500BF30417FC7BDC0044A1BC /* LNS.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LNS.hh; path = ../LNS.hh; sourceTree = "<group>"; };
-		500BF30517FC7BDC0044A1BC /* LNSSpace.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LNSSpace.hh; path = ../LNSSpace.hh; sourceTree = "<group>"; };
 		500BF30617FC7BDC0044A1BC /* main.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cc; path = ../main.cc; sourceTree = "<group>"; };
 		500BF30717FC7BDC0044A1BC /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; name = Makefile; path = ../Makefile; sourceTree = "<group>"; };
 		500BF30817FC7BDC0044A1BC /* random.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = random.cc; path = ../random.cc; sourceTree = "<group>"; };
 		500BF30917FC7BDC0044A1BC /* random.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = random.hh; path = ../random.hh; sourceTree = "<group>"; };
 		500BF30A17FC7BDC0044A1BC /* test.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = test.cfg; path = ../test.cfg; sourceTree = "<group>"; };
+		500BF30C17FC7F3C0044A1BC /* branching.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = branching.hh; path = ../branching.hh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -36,10 +34,9 @@
 				500BF2F217FC7BDC0044A1BC /* CBCTT.cc */,
 				500BF2F317FC7BDC0044A1BC /* CBCTT.hh */,
 				500BF2F417FC7BDC0044A1BC /* faculty.cc */,
+				500BF30C17FC7F3C0044A1BC /* branching.hh */,
 				500BF2F517FC7BDC0044A1BC /* faculty.hh */,
 				500BF2F617FC7BDC0044A1BC /* gecode-lns */,
-				500BF30417FC7BDC0044A1BC /* LNS.hh */,
-				500BF30517FC7BDC0044A1BC /* LNSSpace.hh */,
 				500BF30617FC7BDC0044A1BC /* main.cc */,
 				500BF30717FC7BDC0044A1BC /* Makefile */,
 				500BF30817FC7BDC0044A1BC /* random.cc */,
@@ -59,7 +56,6 @@
 				500BF2FF17FC7BDC0044A1BC /* Makefile */,
 				500BF30017FC7BDC0044A1BC /* meta_lns.C */,
 				500BF30117FC7BDC0044A1BC /* meta_lns.h */,
-				500BF30317FC7BDC0044A1BC /* tsp_lns.C */,
 			);
 			name = "gecode-lns";
 			path = "../gecode-lns";

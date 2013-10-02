@@ -7,8 +7,9 @@
 #include <gecode/driver.hh>
 #include <gecode/gist.hh>
 #include "faculty.hh"
-#include "LNSSpace.hh"
-#include "LNS.hh"
+#include "gecode-lns/lns_space.h"
+#include "gecode-lns/meta_lns.h"
+#include "branching.hh"
 #include <queue>
 #include <cmath>
 #include <map>
@@ -454,10 +455,6 @@ public:
         rel(*this, z >= 0);
 
     }
-
-    virtual void post_best_branching();
-
-    virtual void post_random_branching();
     
     CBCTT(bool share, CBCTT& s) : DeferredBranchingSpace<MinimizeScript>(share, s), debug(s.debug)
     {
@@ -661,16 +658,18 @@ public:
     {
         os << Gist::Comparator::compare<IntVar>("Roomslots", roomslot, static_cast<const CBCTT&>(s).roomslot);
     }
+  
+    
 };
 
-class LNSCBCTT : public LNSSpace<CBCTT>
+class LNSCBCTT : public LNSAbstractSpace<CBCTT>
 {
 public:
 
 
-    LNSCBCTT(const InstanceOptions& o) : LNSSpace<CBCTT>(o) { }
+    LNSCBCTT(const InstanceOptions& o) : LNSAbstractSpace<CBCTT>(o) { }
 
-    LNSCBCTT(bool share, LNSCBCTT& t) : LNSSpace<CBCTT>(share, t) { }
+    LNSCBCTT(bool share, LNSCBCTT& t) : LNSAbstractSpace<CBCTT>(share, t) { }
     
     unsigned int relaxable_vars()
     {
@@ -683,7 +682,7 @@ public:
     For each heuristic, the number of actually freed variables is recorded 
     (freed), in the end, (free+freed random variables are freed).
      */
-    unsigned int relax(LNSSpace<CBCTT>* tentative, unsigned int free)
+    unsigned int relax(LNSAbstractSpace<CBCTT>* tentative, unsigned int free)
     {
         typedef Gecode::Search::Sequential::LNS<LNSCBCTT> MyLNS;
         

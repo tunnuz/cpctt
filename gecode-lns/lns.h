@@ -221,7 +221,7 @@ namespace Gecode {
     if (m_opt.clone) {
       if (s->status(stats) == SS_FAILED) {
         stats.fail++;
-        root = new Search::FailedSpace();
+        root = NULL;
       } else {
         root = s->clone();
       }
