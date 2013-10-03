@@ -6,10 +6,10 @@ In [Curriculum-Based Course Timetabling (CB-CTT)](http://satt.diegm.uniud.it/ctt
 
 This repository contains the following assets:
 
-* a Constraint Programming (CP) model for the CB-CTT problem written in [GECODE v4](http://www.gecode.org "GECODE"), and
+* a Constraint Programming (CP) model for the CB-CTT problem written in [GECODE v4.1.0](http://www.gecode.org "GECODE"), and
 * a Large Neighborhood Search (LNS) solver for the said model (implemented as a GECODE search engine).
 
-**Note** that the LNS engine implemented in this code is a prototype, and does not follow any of the GECODE codebase guidelines. In particular, the whole optimization run is carried out in a single call of `next()`. A more principled LNS engine for GECODE can be found at [https://bitbucket.org/tunnuz/gecode-lns](https://bitbucket.org/tunnuz/gecode-lns).
+**Note** that the LNS engine implemented in this code is a prototype, and does not follow any of the GECODE codebase guidelines. In particular, the whole optimization run is carried out in a single call of `next()`. A more principled LNS engine for GECODE can be found at [https://bitbucket.org/tunnuz/gecode-lns](https://bitbucket.org/tunnuz/gecode-lns, also GECODE 4.1.0).
 
 ## Usage
 
@@ -34,7 +34,7 @@ See the [Curriculum-Based Course Timetabling (CB-CTT)](http://satt.diegm.uniud.i
 In order to compile the solver you'll need the following prerequisites:
 
 * a C++11-compliant compiler and standard library, and
-* GECODE v4 (although the code can be easily ported to GECODE v3 with an upcoming patch).
+* GECODE v4.1.0 (although the code can be easily ported to GECODE v3 and v4.2.0).
 
 Also, update the `GECODE_LIBS` variable in the Makefile, so that it points to the correct shared library path, e.g., `/usr/local/lib`. Then, run
 
