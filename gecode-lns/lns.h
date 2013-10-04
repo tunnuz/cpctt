@@ -27,6 +27,7 @@ namespace Gecode {
     Search::Statistics statistics(void) const;
     /// Check whether engine has been stopped
     bool stopped(void) const;
+  
   protected:
     Space* root;
     E<T>* engine;

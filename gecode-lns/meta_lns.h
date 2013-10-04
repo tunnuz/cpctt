@@ -54,6 +54,11 @@ namespace Gecode { namespace Search { namespace Meta {
     double temperature;
     /// Neighbors accepted at current temperature
     unsigned long int neighbors_accepted;
+    
+    /// Empty no-goods (copied from RBS)
+    GECODE_SEARCH_EXPORT
+    static NoGoods eng;
+    
   public:
     /// Constructor
     LNS(Space*, size_t, TimeStop* e_stop0,
@@ -66,6 +71,8 @@ namespace Gecode { namespace Search { namespace Meta {
     virtual bool stopped(void) const;
     /// Reset engine to restart at space \a s
     virtual void reset(Space* s);
+    /// Return no-goods
+    virtual NoGoods& nogoods(void);
     /// Destructor
     virtual ~LNS(void);
     /// FIXME: waiting for a definitive way to pass specific options to the (meta-)engines, currently they will be embedded in

@@ -593,6 +593,12 @@ public:
             
         }
     }
+  
+    /** DeferredBranchingSpace::tree_search_branching */
+    virtual void tree_search_branching()
+    {
+        branch(*this, roomslot, INT_VAR_DEGREE_MAX(), INT_VAL_MIN());
+    }
 
     void load(const char* s)
     {
@@ -657,42 +663,51 @@ public:
     virtual void compare(const Space& s, ostream& os = cout) const
     {
         os << Gist::Comparator::compare<IntVar>("Roomslots", roomslot, static_cast<const CBCTT&>(s).roomslot);
-    }
-  
-    
+    }    
 };
 
-class LNSCBCTT : public LNSAbstractSpace<CBCTT>
+class LNSCBCTT : public CBCTT, public LNSAbstractSpace
 {
 public:
 
 
-    LNSCBCTT(const InstanceOptions& o) : LNSAbstractSpace<CBCTT>(o) { }
+    LNSCBCTT(const InstanceOptions& o) : CBCTT(o) { }
 
-    LNSCBCTT(bool share, LNSCBCTT& t) : LNSAbstractSpace<CBCTT>(share, t) { }
+    LNSCBCTT(bool share, LNSCBCTT& t) : CBCTT(share, t) { }
     
-    unsigned int relaxable_vars()
+    virtual unsigned int relaxable_vars() const
     {
         return roomslot.size();
     }
+  
+    virtual void initial_solution_branching(unsigned long int restarts);
     
-    /** 
+    virtual void neighborhood_branching();
+  
+    /**
     Relax variables according to heuristics based on the the constraints
     that are yet to satisfy or the cost components that are yet to minimize. 
     For each heuristic, the number of actually freed variables is recorded 
     (freed), in the end, (free+freed random variables are freed).
      */
-    unsigned int relax(LNSAbstractSpace<CBCTT>* tentative, unsigned int free)
+    unsigned int relax(Gecode::Space* tentative_s, unsigned int free)
     {
-        typedef Gecode::Search::Sequential::LNS<LNSCBCTT> MyLNS;
-        
+      
+        CBCTT* tentative = static_cast<CBCTT*>(tentative_s);
+      
+        typedef Gecode::Search::Meta::LNS MyLNS;
+      
         // Counter to keep track of really freed variables
         int freed = 0;
-        
+      
+        /* --- NOT IN GECODE-LNS
+         
 //#ifdef TOTALLY_RANDOM
         double rn = (double)rand() / (double)RAND_MAX;
         MyLNS::random = rn < MyLNS::random_relaxation;
 //#endif
+         
+       */
 
         // Partition slots in conflicting, non conflicting and all
         vector<int> all;
@@ -805,6 +820,8 @@ public:
         }
         else
         {
+            /* --- NOT IN GECODE-LNS
+
             // Sometimes act randomly
             if (MyLNS::random)
             {
@@ -823,6 +840,8 @@ public:
                 
                 return free;
             }
+             
+            */
             
             bool distribute = false;
             
@@ -1077,7 +1096,7 @@ public:
     }
     
     /** Specialized constrain function with lexicographic optimization */
-    virtual void constrain(const Space& b, int delta)
+    virtual void constrain(const Space& b, bool strict, double delta)
     {
         const LNSCBCTT& cb = static_cast<const LNSCBCTT&>(b);
         
@@ -1109,7 +1128,28 @@ public:
             rel(*this, z < cb.cost().val() + delta);
         }
     }
-    
+  
+    virtual bool improving(const Gecode::Space& s, bool strict)
+    {
+      const LNSCBCTT& cb = static_cast<const LNSCBCTT&>(s);
+      
+      if (cb.violations())
+      {
+        if (cb.violations() > violations())
+          return true;
+        if (!strict && cb.violations() >= violations())
+          return true;
+        return false;
+      }
+      
+      if (cb.cost().val() > cost().val())
+        return true;
+      if (!strict && cb.cost().val() > cost().val())
+        return true;
+      return false;
+      
+    }
+  
     /** Post all hard constraints */
     virtual void post_hard_constraints()
     {
