@@ -1,0 +1,247 @@
+\documentclass{llncs}
+
+\usepackage{color}
+\usepackage{blindtext}
+\usepackage[affil-it]{authblk}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{colortbl}
+
+\newcommand{\ignore}[1]{} 
+\newcommand{\code}[1]{\texttt{#1}} 
+\newcommand{\redmark}[1]{\textcolor{red}{#1}}
+\DeclareMathOperator*{\argmin}{argmin} 
+
+\begin{document}
+
+\title{Hybrid CP+LNS for the Curriculum-Based Course Timetabling Problem}
+\titlerunning{Hybrid CP+LNS for the Curriculum-Based Course Timetabling (CB-CTT) Problem}
+
+\author{Tommaso Urli\inst{}}
+\institute{
+%      Scheduling and Timetabling Group,\\
+      Dept. of Electrical, Management and Mechanical Engineering\\
+      University of Udine, Via Delle Scienze, 206 - 33100 Udine, Italy\\
+      \email{tommaso.urli@uniud.it}
+}
+
+\maketitle
+
+\begin{abstract}
+
+Course Timetabling (CTT) \cite{Scha99} is a popular combinatorial optimization problem, which deals with generating university timetables by scheduling weekly lectures, subject to conflicts and availability constraints, while minimizing costs related to resources and user discomfort. 
+% Here we consider the Curriculum-Based (CB-CTT) variant, which has been subject of the Second International Timetabling Competition (ITC2007) \cite{DiMS07}, and is considered one of the \emph{standard} CTT formulations. 
+In CB-CTT, students enrol to \emph{curricula} i.e., (possibly overlapping) collections of courses. Lectures of courses pertaining to the same curriculum must therefore be scheduled at different times, so that students can attend all courses. 
+%
+In this paper we propose (i) a Constraint Programming (CP) model for CB-CTT and (ii) a Large Neighborhood Search (LNS) \cite{Pisinger2010} strategy exploiting constraint propagation to solve hard instances of the problem. 
+% To the best of our knowledge, this is the first contribution on CP for CB-CTT. 
+We then compare our findings against the current best results on the ITC2007 \cite{DiMS07} testbed. 
+
+\end{abstract}
+
+\section{Introduction}\label{sec:introduction}
+
+The problem of generating good timetables arises periodically in every university of the world. The problem is inherently complex, involving scheduling weekly lectures while avoiding conflicts i.e., situations in which students would have to attend two lectures at the same time, and possibly generating timetables which cause the least discomfort to both teachers and students.
+ % In most real-world cases, the problem is even more complex, because of constraints and costs implied by particular university policies.
+From a theoretical point of view, the underlying graph-coloring problem is NP-complete \cite{Werr85}. For this reason, CB-CTT has been seldom tackled by means of incomplete methods.
+%This is typically done by splitting the problem into \emph{hard constraints} whose violation prevents a solution from being feasible and \emph{soft constraints} which are cost components to be minimized. 
+
+Because of its practical relevance, the problem has been widely studied (see \cite{Scha99} for a survey) and many formulations exist, reflecting policies from various universties. Two of them are particularly popular: the Post-Enrolment Course Timetabling (PE-CTT) \ignore{\cite{LePM07}} and the Curriculum-Based Course Timetabling (CB-CTT) \cite{DiMS07}. Both formulations have been the subject of the Second International Timetabling Competition (ITC2007) \cite{DiMS07}, and are currently considered as \emph{standard} formulations. 
+%
+The primary difference between the two formulations is the origin of the matrix of conflicts between lectures. In PE-CTT, students enrol to individual courses, thus two courses are in conflict if they appear together in a student's plan. Conversely, in CB-CTT, students enrol to curricula (presets of courses), so a course is only in conflict with other courses in the same curriculum. In this paper we are focusing on the latter formulation, whose variants have been described thoroughly in \cite{BDDS12}.
+Except for one case, CB-CTT variants only differ on the nature and the relative importance (weight) of soft constraints.
+
+% The paper is structured as follows: Section~\ref{sec:related_work} describes some of the relevant work in literature about CB-CTT, Section~\ref{sec:problem} describes in detail the considered CB-CTT variants, Section~\ref{sec:search} describes the proposed CP model and search strategy based on LNS, finally Section~\ref{sec:results} compares the preliminary results of this method against the current bests in literature and Section~\ref{sec:conclusions} concludes the paper and highlights the future work on the topic.
+
+
+\section{Problem description}\label{sec:problem}
+
+We now formally define the considered variant of CB-CTT. The definition involves the following entities
+
+\begin{itemize}
+    \item \textbf{Days $\times$ Timeslots = Periods.} We are given a set $\mathbf{D}$ of teaching \emph{days}, each one partitioned in a set of \emph{timeslots} $\mathbf{T} \subseteq \mathbb{N}$. Each $p \in \mathbf{P} = \mathbf{D} \times \mathbf{T}$ defines a \emph{period} which is unique within a week.
+    \item \textbf{Rooms.} We are allowed to schedule lectures in a set $\mathbf{R}$ of \emph{rooms}, each one with a specific \emph{capacity} $\mathbf{k_r}$ for $r \in \mathbf{R}$. Additionally, a \emph{roomslot} $rs \in \mathbf{RS} = \mathbf{R} \times \mathbf{P}$ represents a room in a specific period.
+    \item \textbf{Courses.} A course $c \in \mathbf{C}$ is composed of a set $\mathbf{L_c}$ of \emph{lectures}, that must be scheduled at different times. Each course is taught by a \emph{teacher} $\mathbf{t}_c$ and is attended by a set of \emph{students} $\mathbf{S_c}$. In addition, the lectures of a course should be scattered over a \emph{minimum number of working days} $\mathbf{w_c}$ and must not be scheduled in any period $u \in \mathbf{U_c} \subset \mathbf{P}$ declared as unavailable. The complete set of lecture is $\mathbf{L} = \bigcup\mathbf{L_c}$ for all $c \in \mathbf{C}$.
+    % We define $\mathbf{L} = \bigcup \mathbf{L_c}$ $ \forall c \in \mathbf{C}$. 
+    \item \textbf{Curricula.} Courses are organized in \emph{curricula} $q \in \mathbf{Q}$ that students can enrol to. Each curriculum has a set of courses $\mathbf{C_q} \subseteq \mathbf{C}$. Lectures pertaining courses in the same curriculum cannot be scheduled together, in order to allow students of each curricula to attend all courses.
+\end{itemize}
+
+\noindent
+A \textbf{feasible} solution of the problem is an assignment of a \emph{period} and a \emph{room}, to each lecture, that satisfies the following \textbf{hard} constraints
+
+\begin{itemize}
+    \item \textbf{Lectures.} All lectures $\mathbf{L}$ must be scheduled.
+    \item \textbf{Room occupancy.} Two lectures $l_1, l_2 \in \mathbf{L}, l_1 \neq l_2$ cannot take place in the same roomslot, no matter what course or curriculum they pertain to.
+    \item \textbf{Conflicts.} Lectures in the same course or in conflicting courses i.e., same teacher or same curriculum, may not be scheduled at the same time.
+    \item \textbf{Availabilities.} A course may not be taught in any of its unavailable periods.
+\end{itemize}
+
+\noindent
+Feasible solutions can be ranked on the basis of their violations of the following \textbf{soft constraints}
+
+\begin{itemize}
+     \item \textbf{Room capacity.} Every lecture $l \in \mathbf{L_c}$ for $c \in \mathbf{C}$ should be scheduled in a room $r \in \mathbf{R}$ so that $\mathbf{k_r} \leq |\mathbf{S_c}|$, which can accomodate all of its students. If this is not the case, $|\mathbf{S_c}| - \mathbf{k_r}$ \emph{room capacity violations} are considered. 
+     \item \textbf{Room stability.} Every lecture $l \in \mathbf{L_c}$ for $c \in \mathbf{C}$ should be given in the same room. Every additional room used for a lecture in course $c$ generates a \emph{room stability violation}.
+     \item \textbf{Minimum working days.} Lectures $\mathbf{L_c}$ of a course $c \in \mathbf{C}$ should be scattered over a minimum number of working days $\mathbf{w_c}$. Each time a course is scheduled in $d < \mathbf{w_c}$ days, we count $\mathbf{w_c}-d$ \emph{working days violations}.
+     \item \textbf{Isolated lectures.} When possible, lectures of the same curriculum should be adjacent within a day. Each time a lecture is not preceded or followed by lectures of courses in the same curriculum counts as a \emph{isolated lectures violation}.
+\end{itemize}
+
+\vspace{0.1cm}
+\noindent
+Thus, in addition of being feasible, a solution $s$ should have the minimal linear combination of soft violations (see weights in Table~\ref{tab:weights}) 
+%
+\begin{equation}
+    \label{eqn:cost}
+    cost(s) = rc(s) \cdot w_{rc} + rs(s) \cdot w_{rs} + mwd(s) \cdot w_{mwd} + il(s) \cdot w_{il} 
+\end{equation}
+\vspace{-0.8cm}
+\begin{table}
+    \centering
+    \begin{tabular}{|l|c|c|}
+        \hline
+        \textbf{Violation} & \textbf{Weight} & \textbf{Symbol} \\
+        \hline
+        Room capacity          & 1  & $rc$    \\
+        Room stability         & 1  & $rs$    \\
+        Minimum working days   & 5  & $mwd$    \\
+        Isolated lectures      & 2  & $il$    \\
+        \hline
+    \end{tabular}
+    \vspace{0.22cm}
+    \caption{Weights of the various types of violations \cite{BDDS12} \label{tab:weights}}
+\end{table}
+ 
+\vspace{-1.3cm}
+\section{Related work}\label{sec:related_work}
+\vspace{-0.1cm}
+We discuss previous work involving both CP models for other CTT variants, and meta-heuristics for CB-CTT. To the best of our knowledge, our approach is the first to address CB-CTT from a CP perspective.
+%
+\vspace{-0.05cm}
+\paragraph{Constraint programming.} Cambazard \emph{et al.} \cite{CHOP08} describe a hybrid approach for PE-CTT, that shares many similarities with our technique. Among other things, the authors propose a CP model, coupled with a LNS search strategy, to tackle complex instances of the problem. 
+Some interesting insight is given on the approach. First, the authors stress the importance of releasing the right variables during the LNS step. Second, they propose a Simulated Annealing (SA) acceptance criterion to escape local minima. Third, they handle feasibility and optimization in different search phases.
+Cipriano \emph{et al.} \cite{CiDD12} describe a framework for the integration of a CP solver with LNS and solve a simple CTT variant where conflicts are solely determined by the availability of teachers.  
+%
+\vspace{-0.05cm}
+\paragraph{Meta-heuristics.} Many meta-heuristic methods have been proposed to deal with the CB-CTT problem. 
+% The following approaches are the current best ones on the ITC2007 testbed, and the ones we'll compare with. 
+M\"uller \cite{Mull09} describes a multi-phase local-search algorithm combining a constructive forward search to obtain a feasible solution with successive local-search steps based on Hill-Climbing (HC), Great Deluge (GD) and SA. Bellio \emph{et al.} \cite{BeDS12} propose a hybrid local-search algorithm which alternates SA with dynamic Tabu Search (TS) with shifting penalties. The work is supported by an extensive statistical analysis on the effect of parameters. L\"u and Hao \cite{LuHa09} propose a three-phase hybrid algorithm which improves a greedy feasible solution through alternate intensification (TS) and perturbation. The trade-off between intensification and diversification is controlled by two parameters that are adjusted based on the past performance. Abdullah \emph{et al.} \cite{ATMM10} describe a hybrid meta-heuristic based on GD and an electromagnetic-like mechanism (EM) that performed very well on various tracks of the ITC2007 competition.
+
+\vspace{-0.05cm}
+
+\section{Model and search strategy}\label{sec:search}
+
+Similarly to \cite{CHOP08} and \cite{CiDD12}, we model CB-CTT in CP, and explore it employing a LNS \cite{Pisinger2010} search strategy. For the purpose of reproducibility, both the model and of the LNS engine are available at \texttt{\href{http://bitbucket.org/tunnuz/cpctt}{http://bitbucket.org/tunnuz/cpctt}}.
+
+\subsection{Model}
+
+\paragraph{Variables.} We represent a solution as a set of $roomslot_l$ variables, that represent both the room and the period a lecture $l \in \mathbf{L}$ is scheduled in. The variable domains are initialized as $dom(roomslot_l) = \{1\dots|\mathbf{R}|\cdot|\mathbf{P}|\}$. Additionally, some redundant variables (namely $day_l$, $period_l$, $timeslot_l$, $room_l$ with the obvious channellings) are used as modeling sugar.
+
+\paragraph{Hard constraints.} Since we are using exactly $|\mathbf{L}|$ decision variables, expressing the \textbf{Lectures} and \textbf{Room occupancy} constraints is trivial
+%
+\begin{equation*}
+    \code{alldifferent}(roomslot)
+\end{equation*}
+%
+\noindent
+To model the \textbf{Conflicts} constraint, we must take into account pairs of conflicting courses and constrain their lectures to be scheduled at different periods
+%
+\begin{equation*}
+    \code{alldifferent}(\{roomslot_l \mid l \in \mathbf{L_{c_1}}\!\cup\mathbf{L_{c_2}}\}) 
+\end{equation*}
+%
+\noindent
+$\forall \, c_1, c_2 \in \mathbf{C}, \code{conflicting}\left(c_1,c_2\right)$ where \code{conflicting} checks whether two courses belong to the same curriculum or have the same teacher (note that this holds when checking a course against itself).
+%
+Finally, the \textbf{Availabilities} constraint can be modeled by imposing that 
+%
+\begin{equation*}
+    period_{l} \not\in \mathbf{U_c}, \;\;\;  \forall \, c \in \mathbf{C}, l \in \mathbf{L_c}
+\end{equation*}
+%
+\noindent
+Note that, for our purpose, some of the hard constraints are available both as hard and soft constraints. In particular, the \textbf{Lectures} and \textbf{Conflicts} constraint can be transformed into soft constraints by imposing \code{nvalues} and \code{count} constraints between the $roomslot$ and $period$ variables and two auxiliary variables, and then embedding the auxiliary variables in the cost function.
+
+\paragraph{Soft constraints.}
+
+For each of the soft constraints, we defined an auxiliary variable to accumulate the violations of the constraints. For some of them, such as \textbf{Room stability}, this involves counting, for each $c \in \mathbf{C}$ how many different values (\code{nvalues}) were taken by $\{roomslot_l \mid l \in \mathbf{L_c}\}$, and then subtracting it from $|L_c|$ to calculate how many extra rooms were used by the course. A similar approach was taken to compute the violations for \textbf{Minimum working days}, while set variables and \code{cardinality} constraints were used for \textbf{Isolated lectures}.
+
+\subsection{Search strategy}
+
+While some instances can be solved by CP alone, this is not the case for the harder ones. In particular, the essential \textbf{Lectures} and \textbf{Conflicts} hard constraints are very difficult to tackle with classic \emph{branch \& bound}. 
+
+Our approach treats them as soft constraints, and solves the lexicographic minimization problem where first all hard violations are eliminated, and then the objective function (Equation~\ref{eqn:cost}) is minimized. 
+%
+In order to get an advantage on instances where CP alone is able to solve the hard constraints, we start each resolution with a 10-seconds \emph{branch \& bound} attempt to solve the complete model.
+%
+\newpage
+\noindent
+Our LNS search strategy revolves around the following ideas
+
+\begin{itemize}
+    \item{\textbf{SA-like cost bounding.}} In order to escape from local minima, we allow the cost of a neighboring solution to increase. However, to avoid disrupting the positive effect that cost bounding has on propagation, we reverse the standard SA probability of acceptance, and we compute the allowed cost increase as $\Delta = -(t\ln p)$, where $t$ is the typical temperature parameter and $p \sim \mathcal{U}(0,1)$ is a random number in $[0,1]$. Temperature $t$ is updated as $t = t\cdot \lambda$, with $0 < \lambda < 1$ after $\rho$ solutions have been accepted at the current level of $t$.
+    \item{\textbf{Biased relaxation.}} At each LNS step we select a number $d \in \{d_{min},d_{max}\}$ of variables to release, and re-assign them through \emph{branch \& bound}. A fraction of the variables to release is chosen heuristically based on to the constraints being violated by the solution, the rest is chosen randomly. Branch \& bound is given a timeout of $t_{var} \cdot d$ milliseconds where $t_{var}$ is a constant. 
+    \item{\textbf{Growing neighborhoods and stagnation.}} After $iter_{max} \cdot d$ iterations have been spent at a certain $d$ without any improvement, $d$ is increased in a VNS fashion. When $d = d_{max}$ the search restarts with a perturbed solution.
+    \item{\textbf{Adaptive $d_{min}$}.} At each restart, the new $d_{min}$ is set to the $d$ that yielded the highest number of (temporary) best solutions in the past iterations.
+\end{itemize}
+
+\noindent
+In general, our biased relaxation mechanism works as follows: whenever a lecture $l$ causes some violations (either hard or soft), the variable $roomslot_l$ and the variables related to the other lectures involved in the violation, are released. As for the parameters, we currently use $d_{min} = 2$, $d_{max} = 5\%$ of the number of lectures, $t_{var} = 10$, $t_{init} = 35$, $\rho = 5$, $iter_{max} = 250$ and $\lambda = 0.97$.
+
+\section{Results}\label{sec:results}
+
+Table~\ref{tab:results} shows our preliminary results (grey) against the current best ones in literature, on the ITC2007 testbed. Our approach is still outperformed by the well-established algorithms on many instances and further investigation is needed to better deal with local minima in order to improve our solutions. 
+% Nevertheless, on some instances, we get close or identical results to the other approaches.
+
+\begin{table}
+    \centering
+    \begin{scriptsize}
+        \begin{tabular} {|c|r|r|r|r|r|r|r|r|>{\columncolor[gray]{.8}}r|>{\columncolor[gray]{.8}}r|r|} 
+            \hline 
+            Inst. & \multicolumn{2}{c|}{\textbf{M\"uller \cite{DiMS07} $\cup$ \cite{Mull09}}} & \multicolumn{2}{c|}{\textbf{L\"u \& Hao \cite{LuHa09}}} & \multicolumn{2}{c|}{\textbf{Abdullah \emph{et al.} \cite{ATMM10}}} & \multicolumn{ 2}{c|}{\textbf{Bellio \emph{et al.} \cite{BeDS12}}} & \multicolumn{ 2}{c|}{\textbf{CP+LNS}} & \multicolumn{1}{c|}{\textbf{Best}} \\
+            \hline
+             & \multicolumn{1}{c|}{avg} & \multicolumn{1}{c|}{best} & \multicolumn{1}{c|}{avg} & \multicolumn{1}{c|}{best} & \multicolumn{1}{c|}{avg} & \multicolumn{1}{c|}{best} &  \multicolumn{1}{c|}{avg} & \multicolumn{1}{c|}{best} &  \multicolumn{1}{c|}{median} & \multicolumn{1}{c|}{best} & \\
+            \hline
+             1 & \textbf{5.0} & \textbf{5} & \textbf{5.0} & \textbf{5} & \textbf{5.0} & \textbf{5} & \textbf{5.00} & \textbf{5} & 6.0 & 5 & 5 \\
+            2 & 61.3 & 43 & 60.6 & \textbf{34} & 53.90 & 39 & \textbf{53.0} & 40 & 219.5 & 158 & 24 \\
+            3 & 94.8 & 72 & 86.6 & \textbf{70} & 84.20 & 76 &  \textbf{79.0} & \textbf{70} & 226.0 & 158 & 66 \\
+            4 & 42.8 & \textbf{35} & 47.9 & 38 & 51.90 & \textbf{35} & \textbf{38.3} & \textbf{35} & 92.0 & 62 & 35 \\
+            5 & 343.5 & \textbf{298} & \textbf{328.5} & \textbf{298} & 339.5 & 315 & 365.20 & 326 & 931.5 & 637 & 290 \\
+            6 & 56.8 & \textbf{41} & 69.9 & 47 & 64.40 & 50 & \textbf{50.4} & \textbf{41} & 174.0 & 130 & 27 \\
+            7 & 33.9 & 14 & 28.2 & 19 & \textbf{20.20} & \textbf{12} & 23.8 & 17 & 156.5 & 97 & 6 \\
+            8 & 46.5 & 39 & 51.4 & 43 & 47.90 & \textbf{37}  & \textbf{43.6} & 40 & 162.5 & 70 & 37 \\
+            9 & 113.1 & 103 & 113.2 & 99 & 113.90 & 104 & \textbf{105.0} & \textbf{98} & 216.0 & 173 & 96 \\
+            10 & 21.3 & \textbf{9} & 38.0 & 16 & 24.10 & 10 & \textbf{20.5} & 11 & 137.5 & 91 & 4 \\
+            11 & \textbf{0.0} & \textbf{0} & \textbf{0.0} & \textbf{0} & \textbf{0.0} & \textbf{0} & \textbf{0.00} & \textbf{0} & 0.0 & 0 & 0 \\
+            12 & 351.6 & 331 & 365.0 & \textbf{320} & 355.90 & 337 & \textbf{340.5} & 325 & 716.0 & 616 & 300 \\
+            13 & 73.9 & 66 & 76.2 & 65 & 72.40 & \textbf{61} & \textbf{71.3} & 64 & 152.0 & 120 & 59 \\
+            14 & 61.8 & \textbf{53} & 62.9 & 52 & 63.30 & \textbf{53} & \textbf{57.9} & 54 & 131.0 & 103 & 51 \\
+            15 & 94.8 & -- & 87.8 & \textbf{69} & 88.00 & 73 & \textbf{78.8} & 70 & 226.5 & 150 & 66 \\
+            16 & 41.2 & -- & 53.7 & 38 & 51.70 & 32 & \textbf{34.8} & \textbf{27} & 124.5 & 93 & 18 \\
+            17 & 86.6 & -- & 100.5 & 80 & 86.20 & 72 & \textbf{75.7} & \textbf{67} & 198.5 & 152 & 56 \\
+            18 & 91.7 & -- & 82.6 & \textbf{67} & 85.80 & 77 & \textbf{80.8} & 69 & 144.5 & 116 & 62 \\
+            19 & 68.8 & -- & 75.0 & \textbf{59} & 78.10 & 60 & \textbf{67.0} & 61 & 199.0 & 141 & 57 \\
+            20 & \textbf{34.3} & -- & 58.2 & 35 & 42.90 & \textbf{22} & 38.8 & 33 & 185.0 & 137 & 4 \\
+            21 & 108.0 & --& 125.3 & 105 & 121.50 & 95 & \textbf{100.1} & \textbf{89} & 257.5 & 209 & 75 \\
+            \hline 
+        \end{tabular}
+        \vspace{0.2cm}
+        \caption{Comparison with the best approaches in literature on ITC2007 instances. Timeout (5 minutes) has been calculated using the competition benchmarking tool. \label{tab:results}}
+    \end{scriptsize}
+\end{table}
+
+\section{Conclusions and future work}\label{sec:conclusions}
+
+Coupling a LNS strategy with a CP model seems a promising way to get the best of the two worlds. On the one hand, CP allows to model problems in a high-level language and comes with powerful propagation techniques. On the other hand, LNS allows to explore the search space while exploiting the neighborhood reduction provided by propagation. We expect the importance of neighborhood reduction to become more and more relevant when dealing with problems involving large neighborhoods or combination of them.
+% This suggests that the approach would work better on problems with large neighborhood, where the neighborhood reduction is more noticeable.
+
+One of the most promising directions for the future of this approach is the use of multiple channeled CP models to provide even better propagation and make the LNS step faster. Another interesting area for development is the acceptance criterion which, in our opinion, is fundamental to deal with local minima.
+
+\vspace{-0.2cm}
+
+\begin{footnotesize}
+\bibliographystyle{abbrv}
+\bibliography{timetabling, strings}
+\end{footnotesize}
+\end{document}
